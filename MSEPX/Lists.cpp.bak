@@ -1,0 +1,707 @@
+SetProcessList(CListBox* pListBox, CListBox* pListBoxExclusions, BOOL bFilter )
+{
+	HANDLE hSnapShot=CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS,0);
+	PROCESSENTRY32* processInfo=new PROCESSENTRY32;
+	processInfo->dwSize=sizeof(PROCESSENTRY32);
+
+	pListBox->ResetContent(); //clear the list
+
+	wchar_t filepath[MAX_PATH] = {0};
+	int iExt = 0;  // for determining the horizontal extent required for the list box 
+	while(hSnapShot && Process32Next(hSnapShot,processInfo)!=FALSE)
+	{
+		/*
+		Windows Server 2003 and Windows XP/2000:  
+		The size of the PROCESS_ALL_ACCESS flag increased on Windows Server 2008 and Windows Vista. 
+		If an application compiled for Windows Server 2008 and Windows Vista is run on 
+		Windows Server 2003 or Windows XP/2000, the PROCESS_ALL_ACCESS flag is too large and 
+		the function specifying this flag fails with ERROR_ACCESS_DENIED. 
+		To avoid this problem, specify the minimum set of access rights required for the operation. 
+		If PROCESS_ALL_ACCESS must be used, set _WIN32_WINNT to the minimum operating system 
+		targeted by your application (for example, 
+		#define _WIN32_WINNT _WIN32_WINNT_WINXP).
+		*/
+
+		//PROCESS_ALL_ACCESS works in the debugger but not when run by the user because
+		// the Visual environment runs the process as SYSTEM not the user. We could gain complete
+		// control of any process by hacking the permission of the process like this program
+		// hacks registry permissions.
+
+		//DWORD RequiredAccess = PROCESS_ALL_ACCESS;
+		DWORD RequiredAccess = PROCESS_QUERY_INFORMATION | PROCESS_VM_READ;
+
+		// Get a process handle
+		HANDLE hProcess=OpenProcess( RequiredAccess, TRUE, processInfo->th32ProcessID);
+		if( hProcess )
+		{
+			// The PSAPI.LIB (Process Status API) library is required for GetModuleFileNameEx
+			// or load PSAPI.DLL dynamically
+			GetModuleFileNameEx(hProcess, NULL, filepath, MAX_PATH );
+			if( *filepath )
+			{
+				// Some of the file paths start with 
+				// \??\ (like csrs.exe and winlogon) or \SystemRoot\ (like smss.exe)
+				// so trim or translate the value
+				if( !_tcsncmp(filepath, _T("\\??\\"), 4 ) )
+				{
+					wchar_t *s = filepath+4;
+					wchar_t *t = filepath;
+					while( *s ) *t++ = *s++;
+					++*t = _T('\0');
+				}
+				else if( !_tcsnicmp(filepath, _T("\\systemroot\\"), 12 ) )
+				{
+					wchar_t rootpath[MAX_PATH] = {0};
+					char root[MAX_PATH] = {0};
+					char * p = getenv("systemroot");
+					if(*p)
+					{
+						strcpy( root, p );
+						MultiByteToWideChar(CP_ACP,MB_COMPOSITE,
+							root, strlen(root), 
+							rootpath, sizeof(rootpath));
+						wchar_t path[MAX_PATH] = {0};
+						_tcscpy(path,rootpath );
+						_tcscat(path, filepath+11 );
+						_tcscpy(filepath, path );
+					}
+				}
+				// if filtering existing entries in the MSE process exclusion list
+				BOOL bSkip = FALSE;
+				if( bFilter )
+				{
+					// see if the path is already in the exclsion list
+					// -1 return from FindStringExact means it is not found
+					bSkip = ( 0 <= pListBoxExclusions->FindStringExact(-1,filepath) );
+				}
+
+				// Do not add duplicates like the service process
+				if( !bSkip && ( 0 > pListBox->FindStringExact(-1,filepath)) )
+				{
+					pListBox->AddString(filepath);
+					int ilen = GetTextLen(filepath);
+					if( iExt < ilen ) 
+						iExt = ilen;
+				}
+			}
+			CloseHandle( hProcess );
+		}
+	}
+
+	CloseHandle(hSnapShot);
+	delete processInfo;
+
+	// Reset the horizontal extent of the list box if required
+	if( iExt > pListBox->GetHorizontalExtent())
+		pListBox->SetHorizontalExtent(iExt);
+}
+
+// Set the list of excluded processes
+void SetExcludedList(CListBox* pListBox )
+{
+	int iExt = 0;  // for determining the horizontal extent required for the list box 
+	//TCHAR    achKey[MAX_KEY_LENGTH];   // buffer for subkey name
+	//DWORD    cbName;                   // size of name string 
+	TCHAR    achClass[MAX_PATH] = TEXT("");  // buffer for class name 
+	DWORD    cchClassName = MAX_PATH;  // size of class string 
+	DWORD    cSubKeys=0;               // number of subkeys 
+	DWORD    cbMaxSubKey;              // longest subkey size 
+	DWORD    cchMaxClass;              // longest class string 
+	DWORD    cValues;              // number of values for key 
+	DWORD    cchMaxValue;          // longest value name 
+	DWORD    cbMaxValueData;       // longest value data 
+	DWORD    cbSecurityDescriptor; // size of security descriptor 
+	_FILETIME ftLastWriteTime;      // last write time 
+	DWORD i, retCode; 
+	TCHAR  achValue[MAX_VALUE_NAME]; 
+	DWORD cchValue = MAX_VALUE_NAME; 
+
+	pListBox->ResetContent();
+
+	// Read the path entries from the entries in
+	// HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft Antimalware\Exclusions\Processes
+	HKEY hKey;
+	if( ERROR_SUCCESS == RegOpenKeyExW( HKEY_LOCAL_MACHINE, MS_ESS_REG_XP,0, KEY_READ, &hKey) )
+	{
+		// Get the class name and the value count. 
+		retCode = RegQueryInfoKey(
+			hKey,                    // key handle 
+			achClass,                // buffer for class name 
+			&cchClassName,           // size of class string 
+			NULL,                    // reserved 
+			&cSubKeys,               // number of subkeys 
+			&cbMaxSubKey,            // longest subkey size 
+			&cchMaxClass,            // longest class string 
+			&cValues,                // number of values for this key 
+			&cchMaxValue,            // longest value name 
+			&cbMaxValueData,         // longest value data 
+			&cbSecurityDescriptor,   // security descriptor 
+			&ftLastWriteTime);       // last write time 
+	 
+		// Enumerate the subkeys, until RegEnumKeyEx fails.
+	    
+		// There are no subkeys just values so this code is not required
+		/*
+		if (cSubKeys)
+		{
+			//printf( "\nNumber of subkeys: %d\n", cSubKeys);
+
+			for (i=0; i<cSubKeys; i++) 
+			{ 
+				cbName = MAX_KEY_LENGTH;
+				retCode = RegEnumKeyEx(hKey, i,
+						 achKey, 
+						 &cbName, 
+						 NULL, 
+						 NULL, 
+						 NULL, 
+						 &ftLastWriteTime); 
+				if (retCode == ERROR_SUCCESS) 
+				{
+					_tprintf(TEXT("(%d) %s\n"), i+1, achKey);
+				}
+			}
+		}
+		*/
+
+		// Enumerate the key values. 
+		if (cValues) 
+		{
+			//printf( "\nNumber of values: %d\n", cValues);
+
+			for(i=0, retCode = ERROR_SUCCESS ; retCode == ERROR_SUCCESS && i < cValues; i++) 
+			{ 
+				cchValue = MAX_VALUE_NAME; 
+				achValue[0] = '\0'; 
+				retCode = RegEnumValue(hKey, i, 
+					achValue, 
+					&cchValue, 
+					NULL, 
+					NULL,
+					NULL,
+					NULL);
+	 
+				if (retCode == ERROR_SUCCESS ) 
+				{ 
+					pListBox->AddString(achValue);
+					int ilen = GetTextLen(achValue);
+					if( iExt < ilen ) iExt = ilen;
+				} 
+			}
+		}
+    } 
+	// Reset the horizontal extent of the list box if required
+	if( iExt > pListBox->GetHorizontalExtent())
+		pListBox->SetHorizontalExtent(iExt);
+}
+
+
+// Process system menu items
+void CMSEPX_Dlg::OnSysCommand(UINT nID, LPARAM lParam)
+{
+	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
+	{
+		CAboutDlg dlgAbout;
+		dlgAbout.DoModal();
+	}
+	else
+	{
+		CDialog::OnSysCommand(nID, lParam);
+	}
+}
+
+// If you add a minimize button to your dialog, you will need the code below
+//  to draw the icon.  For MFC applications using the document/view model,
+//  this is automatically done for you by the framework.
+
+void CMSEPX_Dlg::OnPaint()
+{
+	if (IsIconic())
+	{
+		CPaintDC dc(this); // device context for painting
+
+		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
+
+		// Center icon in client rectangle
+		int cxIcon = GetSystemMetrics(SM_CXICON);
+		int cyIcon = GetSystemMetrics(SM_CYICON);
+		CRect rect;
+		GetClientRect(&rect);
+		int x = (rect.Width() - cxIcon + 1) / 2;
+		int y = (rect.Height() - cyIcon + 1) / 2;
+
+		// Draw the icon
+		dc.DrawIcon(x, y, m_hIcon);
+	}
+	else
+	{
+		CDialog::OnPaint();
+	}
+}
+
+// The system calls this function to obtain the cursor to display while the user drags
+//  the minimized window.
+HCURSOR CMSEPX_Dlg::OnQueryDragIcon()
+{
+	return static_cast<HCURSOR>(m_hIcon);
+}
+
+//////////////////
+// DRAG and DROP related code
+
+//////////////////
+// You must override PreTranslateMessage to pass input to drag/drop 
+// manager.
+//
+BOOL CMSEPX_Dlg::PreTranslateMessage(MSG* pMsg)
+{
+    return m_ddm.PreTranslateMessage(pMsg) ? TRUE :
+        CDialog::PreTranslateMessage(pMsg);
+}
+
+//////////////////
+// Begin dragging: create new text data from list item under point.
+//
+LRESULT CMSEPX_Dlg::OnDragEnter(WPARAM wp, LPARAM lp)
+{
+	//TRACE(_T(_T("CMSEPX_MFCDlg::OnDragEnter, wp=%d\n")),wp);
+    DRAGDROPINFO& ddi = *(DRAGDROPINFO*)lp;
+    //CListBox* plb = DYNAMIC_DOWNCAST(CListBox, GetDlgItem((int)wp));
+    CListBox* plb = (CListBox*) GetDlgItem((int)wp);
+	ASSERT(plb!=NULL);
+
+	// remove any selections that have been made so to remind the user only the current item is being moved
+	plb->SetSel( -1, FALSE );
+
+    int item = GetLBItemUnderPt(plb, ddi.pt);
+    if (item>=0) {
+        CString text;
+        plb->GetText(item, text);
+        ddi.data = new CDragDropText(text);
+        return TRUE; // do drag/drop
+    }
+    return FALSE; // no item under mouse: nothing to drag
+}
+
+//////////////////
+// User let go of the mouse: drop data into child control.
+//
+LRESULT CMSEPX_Dlg::OnDragDrop(WPARAM wp, LPARAM lp)
+{
+    TRACE(_T("CMSEPX_MFCDlg::OnDragDrop\n"));
+
+	DRAGDROPINFO& ddi = *(DRAGDROPINFO*)lp;
+    LPCTSTR text = (LPCTSTR)ddi.data->OnGetData();
+
+	CListBox* plb = (CListBox*) GetDlgItem((int)wp);
+
+    ASSERT(plb!=NULL);
+
+	if( plb )
+	{
+		// Get the index of an existing entry
+		int iNew = 0; //GetLBItemUnderPt(plb, ddi.pt); // get current position if inserting
+
+		// FindString() would find a substring
+		// FindStringExact() finds only an exact match but is case insensitive 
+		int iExists = plb->FindStringExact(-1, text);
+
+		// If the path is not already there add it
+		if(iExists < 0 )
+		{
+			// Update the Registry by adding an exclusion on the selected process
+			// as a REG_DWORD value of 0x00000000 named with the path
+			if( ERROR_SUCCESS == AddExclusionToRegistry(text))
+			{
+				// add the string
+				iNew = plb->AddString(text);
+
+				// highlight the new path
+				//plb->SetSel(iNew,TRUE);
+			}
+		}
+	}
+
+	// Reseet the running processes list to include the now removed processes
+	// if they are running and if bDoNotShowExcludedProcesses is set
+	if( bDoNotShowExcludedProcesses )
+		SetProcessList((CListBox*)this->GetDlgItem(IDC_LIST_PROCESSES),
+			(CListBox*)this->GetDlgItem(IDC_LIST_EXCLUDED),
+			bDoNotShowExcludedProcesses );
+
+    return 0;
+}
+
+//////////////////
+// Drag aborted (for example, user pressed Esc).
+//
+LRESULT CMSEPX_Dlg::OnDragAbort(WPARAM wp, LPARAM lp)
+{
+    TRACE(_T("CMyDlg::OnDragAbort\n"));
+    return 0;
+}
+
+//////////////////
+// Helper to get the listbox item under the mouse.
+// This may not be the selected item when dropping.
+//
+int CMSEPX_Dlg::GetLBItemUnderPt(CListBox* pListBox, CPoint pt)
+{
+    BOOL bOutside;
+    UINT item = pListBox->ItemFromPoint(pt, bOutside);
+    return item>=0 && !bOutside ? item : -1;
+}
+
+//////////////////
+// DRAG and DROP related code ends
+//////////////////
+
+
+// Add the selected process paths from the registry and the exclusions list
+void CMSEPX_Dlg::OnBnClickedButtonAddMS_Exclusion()
+{
+	CListBox* ProcList = (CListBox*)this->GetDlgItem(IDC_LIST_PROCESSES);
+	CListBox* ExcList = (CListBox*)this->GetDlgItem(IDC_LIST_EXCLUDED);
+
+	// Get the indexes of all the selected items.
+	int nCount = ProcList->GetSelCount();
+	if( LB_ERR != nCount )
+	{
+		CArray<int,int> aryListBoxSel;
+		aryListBoxSel.SetSize(nCount);
+		ProcList->GetSelItems(nCount, aryListBoxSel.GetData());
+		wchar_t filepath[MAX_PATH] = {0};
+		for( int i = 0; i < nCount; i++ )
+		{
+			// avoid a buffer overflow even if it means dropping values
+			ASSERT( ProcList->GetTextLen( aryListBoxSel[i] ) < MAX_PATH );
+			if( ProcList->GetTextLen( aryListBoxSel[i] ) < MAX_PATH )
+			{
+				ProcList->GetText( aryListBoxSel[i], filepath );
+				// make sure this is not adding a duplicate to the exclusions
+				int iExists = ExcList->FindStringExact(-1, filepath);
+				if( iExists < 0 )
+				{
+					// Update the Registry by adding an exclusion on the selected process
+					if( ERROR_SUCCESS == AddExclusionToRegistry(filepath))
+					{
+						// add the string
+						ExcList->AddString(filepath);
+					}
+				}
+			}
+		}
+	}
+
+	// if the processes shown are to be filtered by those already selected
+	// then remove the selections
+	if( bDoNotShowExcludedProcesses )
+	{
+		for( int i = nCount-1; i >= 0; i-- )
+		{
+			ProcList->DeleteString(i);
+		}
+	}
+
+	// clear the process selections
+	ProcList->SetSel(-1, FALSE);
+
+	return;
+}
+
+// Remove the selected process paths from the registry and the exclusions list
+void CMSEPX_Dlg::OnBnClickedButtonRemoveMS_Exclusion()
+{
+	CListBox* ExcList = (CListBox*)this->GetDlgItem(IDC_LIST_EXCLUDED);
+
+	// Get the indexes of all the selected items.
+	int nCount = ExcList->GetSelCount();
+	if( LB_ERR != nCount )
+	{
+		CArray<int,int> aryListBoxSel;
+		aryListBoxSel.SetSize(nCount);
+		ExcList->GetSelItems(nCount, aryListBoxSel.GetData());
+		wchar_t filepath[MAX_PATH] = {0};
+		DWORD rv = -1;
+		// The program can't remove an entry in without resetting the index. So, because
+		// the index changes after each deletion only the first will be 
+		// removed correctly if removed in ascending inex order. 
+		// The solution is to remove listbox items starting with the highest index number.
+		// This assumes the listbox GetSelItems function always returns the selected values in
+		// index order and not a random or selected order.
+		#ifdef _DEBUG
+			int lastidx = aryListBoxSel[nCount-1];
+		#endif
+		for( int i = nCount-1; i >= 0; i-- )
+		{
+			// Avoid several calls to the array
+			int idx = aryListBoxSel[i];
+			// avoid a buffer overflow even if it means dropping values
+			ASSERT( ExcList->GetTextLen( idx ) < MAX_PATH );
+			if( ExcList->GetTextLen( idx ) < MAX_PATH )
+			{
+				ExcList->GetText( idx, filepath );
+				rv = RemoveExclusionFromRegistry(filepath);
+				// Update the Registry by removing the exclusion on the selected process
+				if( ERROR_SUCCESS == rv )
+				{
+				// remove the string
+				#ifdef _DEBUG
+					// make sure the code goes down an ordered list
+					ASSERT( idx <= lastidx );
+					lastidx = idx;
+				#endif
+				ExcList->DeleteString(idx);
+				}
+				else
+					break;
+			}
+		}
+	}
+
+	// clear the process selections if any left after an error
+	ExcList->SetSel(-1, FALSE);
+
+	// Reseet the running processes list to include the now removed processes
+	// if they are running and if bDoNotShowExcludedProcesses is set
+	if( bDoNotShowExcludedProcesses )
+		SetProcessList((CListBox*)this->GetDlgItem(IDC_LIST_PROCESSES),
+			(CListBox*)this->GetDlgItem(IDC_LIST_EXCLUDED),
+			bDoNotShowExcludedProcesses );
+
+	return;
+}
+
+// Calculate the required width in pixels to reset the CListbox with
+// pListBox->SetHorizontalExtent(iExt). This overcomes the bug of not 
+// automatically recalculating the required size
+
+int CMSEPX_Dlg::GetTextLen(LPCTSTR lpszText)
+{
+  ASSERT(AfxIsValidString(lpszText));
+
+  CDC *pDC = GetDC();
+  ASSERT(pDC);
+
+  CSize size;
+  CFont* pOldFont = pDC->SelectObject(GetFont());
+  if ((GetStyle() & LBS_USETABSTOPS) == 0)
+  {
+    size = pDC->GetTextExtent(lpszText, (int) _tcslen(lpszText));
+    size.cx += 3;
+  }
+  else
+  {
+    // Expand tabs as well
+    size = pDC->GetTabbedTextExtent(lpszText, (int)
+          _tcslen(lpszText), 0, NULL);
+    size.cx += 2;
+  }
+  pDC->SelectObject(pOldFont);
+  ReleaseDC(pDC);
+
+  return size.cx;
+}
+
+
+// Add a process exclusion to the Registry
+DWORD CMSEPX_Dlg::AddExclusionToRegistry(LPCTSTR filepath)
+{
+	DWORD rv = -1;
+	try {
+		// set the access to allow writes
+
+		// Add the path entries from the entries in
+		// HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft Antimalware\Exclusions\Processes
+		HKEY hKey = NULL;
+		rv = RegOpenKeyExW( HKEY_LOCAL_MACHINE, MS_ESS_REG_XP,0, KEY_WRITE, &hKey);
+		if( ERROR_SUCCESS == rv && hKey	)
+		{
+			DWORD data = 0;
+			rv = RegSetValueEx( hKey, filepath, 0, REG_DWORD, (const byte *) &data, sizeof(data));
+		}
+
+		if( hKey )
+			RegCloseKey(hKey);	
+
+		if( ERROR_SUCCESS != rv	)
+		{
+			throw(filepath );
+		}
+
+	} catch( LPCTSTR details ) {
+		// Show an error
+		LPWSTR mssg = new WCHAR[1024];
+		lstrcpy( mssg, details);
+		lstrcat( mssg, _T("\n"));
+		lstrcat( mssg, _T("Failure to add a security scan exclusion to the registry") );
+		CUtility::ShowRegistryError( *this, rv, mssg );
+		delete mssg;
+	}
+
+	return rv;
+}
+
+DWORD CMSEPX_Dlg::RemoveExclusionFromRegistry(LPCWSTR filepath)
+{
+	DWORD rv = -1;
+	try {
+		// set the access to allow deletes
+
+		// Remove the path entries from the entries in
+		// HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft Antimalware\Exclusions\Processes
+		HKEY hKey = NULL;
+		rv = RegOpenKeyExW( HKEY_LOCAL_MACHINE, MS_ESS_REG_XP,0, KEY_WRITE, &hKey);
+		if( ERROR_SUCCESS ==  rv && hKey )
+		{
+			DWORD data = 0;
+			rv = RegDeleteValue( hKey, filepath);
+		}
+
+		if( hKey )
+			RegCloseKey(hKey);	
+
+		if( ERROR_SUCCESS != rv	)
+		{
+			throw( filepath );
+		}
+	} catch( LPCWSTR details )
+	{
+		// show an error message
+		LPWSTR mssg = new WCHAR[1024];
+		lstrcpy( mssg, details);
+		lstrcat( mssg, _T("\n"));
+		lstrcat( mssg, _T("Failure to remove a security scan exclusion from the registry") );
+		CUtility::ShowRegistryError( *this, rv, mssg );
+		delete mssg;
+	}
+
+	return rv;
+}
+
+// Add the current user to the registry permission list with full permissions to alter the MSE registry key
+BOOL CMSEPX_Dlg::ChangeRegistryPermissions()
+{
+	HKEY hKey = NULL;
+	BOOL Changed = FALSE;
+	LSTATUS rv = 0;
+	SECURITY_INFORMATION SecInfo = DACL_SECURITY_INFORMATION;
+
+	LPWSTR UserName = new WCHAR[MAX_USER_NAME_SIZE+1];
+	DWORD len = MAX_USER_NAME_SIZE;
+	fksec::sd *regsd = new fksec::sd();
+
+	// return Changed; // use to test error messaging by not adding the user
+	
+	try 
+	{
+		if( GetUserName( UserName, &len ))
+		{
+
+			rv = RegOpenKeyExW( HKEY_LOCAL_MACHINE, MS_ESS_REG_XP,0, READ_CONTROL | WRITE_DAC, &hKey);
+			if( ERROR_SUCCESS == rv && hKey )
+			{
+				fksec::RegGetKeySecurity(hKey, SecInfo, oldregsd );
+
+				*regsd = oldregsd;
+
+				regsd->GetDacl().AddAce( MAXDWORD, ACCESS_ALLOWED_ACE_TYPE, 0,
+					CONTAINER_INHERIT_ACE, GENERIC_ALL, UserName );
+				regsd->GetDacl().normalize();
+				regsd->GetDacl().canonicalize();
+				fksec::RegSetKeySecurity( hKey, DACL_SECURITY_INFORMATION, *regsd );
+
+				Changed = TRUE;
+			}
+			else
+			{
+				// can't use finally without using CLI extensions so make sure handle is closed if opened
+				if( UserName )
+					delete UserName;
+				if( hKey )
+					RegCloseKey(hKey);	
+				throw(rv);
+			}
+			if( UserName )
+				delete UserName;
+			if( hKey )
+				RegCloseKey(hKey);	
+		}
+		else
+		{
+			throw(ERR_CURRENT_USER_NOT_FOUND);
+		}
+
+	}
+	catch( DWORD rv )
+	{
+		CUtility::ShowRegistryError( *this, rv, _T("Failure to change the registry permissions for the current user to full access") );
+	}
+	catch( ... )
+	{
+		CUtility::ShowRegistryError( *this, 0, _T("Failure to change the registry permissions for the current user to full access") );
+	}
+
+	return Changed;
+}
+
+// Return the reqistry to the original security state
+void CMSEPX_Dlg::RestoreRegistryPermissions()
+{
+	HKEY hKey = NULL;
+
+	ASSERT( bRegistryHasBeenChanged == TRUE );
+
+	LSTATUS rv = RegOpenKeyExW( HKEY_LOCAL_MACHINE, MS_ESS_REG_XP,0, READ_CONTROL | WRITE_DAC, &hKey);
+	if( ERROR_SUCCESS == rv && hKey )
+	{
+		fksec::RegSetKeySecurity( hKey, DACL_SECURITY_INFORMATION, oldregsd );
+	}
+
+	if( hKey )
+		RegCloseKey(hKey);	
+
+	return;
+}
+
+
+// Switch to change running process display
+void CMSEPX_Dlg::OnBnClickedCheckDoNotShowExcluded()
+{
+	// Toggle the show settings
+	 CButton* cb = (CButton*)this->GetDlgItem(IDC_CHECK_DONOT_SHOW_EXCLUDED);
+	 if( BST_CHECKED == cb->GetCheck() )
+		bDoNotShowExcludedProcesses = TRUE;
+	 else
+		bDoNotShowExcludedProcesses = FALSE;
+
+	 // Reset the running processes list
+	SetProcessList((CListBox*)this->GetDlgItem(IDC_LIST_PROCESSES),
+		(CListBox*)this->GetDlgItem(IDC_LIST_EXCLUDED),
+		bDoNotShowExcludedProcesses );
+}
+
+// Refresh the running processes so to include those started after this program began
+void CMSEPX_Dlg::OnBnClickedButtonRefresh()
+{
+	// Set the running processes list
+	SetProcessList((CListBox*)this->GetDlgItem(IDC_LIST_PROCESSES),
+		(CListBox*)this->GetDlgItem(IDC_LIST_EXCLUDED),
+		bDoNotShowExcludedProcesses );
+}
+
+void CMSEPX_Dlg::OnLbnDblclkListProcesses()
+{
+	// Select or deselect everything based on the last state
+	CListBox* lb = (CListBox*)this->GetDlgItem(IDC_LIST_PROCESSES);
+	lb->SetSel( -1, bProcessListSelectionState );
+	bProcessListSelectionState = !bProcessListSelectionState;
+}
+
+void CMSEPX_Dlg::OnLbnDblclkListExcluded()
+{
+	// Select or deselect everything based on the last state
+	CListBox* lb = (CListBox*)this->GetDlgItem(IDC_LIST_EXCLUDED);
+	lb->SetSel( -1, bExclusionListSelectionState );
+	bExclusionListSelectionState = !bExclusionListSelectionState;
+}

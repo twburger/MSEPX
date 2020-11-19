@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="MSEPX">
+</Property><Property Name="Solution File" Value="D:\Users\User\Documents\Business\Consulting\MSEPX\MSEPX.sln">
+</Property><Property Name="User Options File" Value="D:\Users\User\Documents\Business\Consulting\MSEPX\MSEPX.suo">
+</Property><Property Name="Date" Value="Sunday, November 17, 2013">
+</Property><Property Name="Time" Value="15:38 PM">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="MSEPX.sln" Description="File successfully backed up as D:\Users\User\Documents\Business\Consulting\MSEPX\MSEPX.sln.old">
+</Event><Event ErrorLevel="0" Project="" Source="MSEPX.suo" Description="File successfully backed up as D:\Users\User\Documents\Business\Consulting\MSEPX\MSEPX.suo.old">
+</Event><Event ErrorLevel="0" Project="MSEPX" Source="MSEPX\MSEPX.vcproj" Description="Converting project file 'D:\Users\User\Documents\Business\Consulting\MSEPX\MSEPX\MSEPX.vcproj'.">
+</Event><Event ErrorLevel="1" Project="MSEPX" Source="MSEPX\MSEPX.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="MSEPX" Source="MSEPX\MSEPX.vcproj" Description="Done converting to new project file 'D:\Users\User\Documents\Business\Consulting\MSEPX\MSEPX\MSEPX.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="MSEPX" Source="MSEPX\MSEPX.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="MSEPX_SRVC" Source="MSEPX_SRVC\MSEPX_SRVC.vcproj" Description="Converting project file 'D:\Users\User\Documents\Business\Consulting\MSEPX\MSEPX_SRVC\MSEPX_SRVC.vcproj'.">
+</Event><Event ErrorLevel="1" Project="MSEPX_SRVC" Source="MSEPX_SRVC\MSEPX_SRVC.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="MSEPX_SRVC" Source="MSEPX_SRVC\MSEPX_SRVC.vcproj" Description="Done converting to new project file 'D:\Users\User\Documents\Business\Consulting\MSEPX\MSEPX_SRVC\MSEPX_SRVC.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="MSEPX_SRVC" Source="MSEPX_SRVC\MSEPX_SRVC.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="MSEPX.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="MSEPX.sln" Description="Converted">
+</Event></UpgradeLog>

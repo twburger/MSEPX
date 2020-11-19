@@ -1,0 +1,412 @@
+MAX_USER_NAME_SIZE	common.h	5;"	d
+BUFSIZE	common.h	6;"	d
+ADD_COMMAND	common.h	8;"	d
+DEL_COMMAND	common.h	9;"	d
+SendMessage2RegValSvc	common.h	/^DWORD SendMessage2RegValSvc( LPCWSTR  lpvMessage );$/;"	p
+new	DragDrop.cpp	11;"	d	file:
+THIS_FILE	DragDrop.cpp	12;"	d	file:
+THIS_FILE	DragDrop.cpp	/^static char THIS_FILE[] = __FILE__;$/;"	v	file:
+CDragDropMgr	DragDrop.cpp	/^CDragDropMgr::CDragDropMgr()$/;"	f	class:CDragDropMgr
+~CDragDropMgr	DragDrop.cpp	/^CDragDropMgr::~CDragDropMgr()$/;"	f	class:CDragDropMgr
+Install	DragDrop.cpp	/^BOOL CDragDropMgr::Install(HWND pMainWnd, DRAGDROPWND* ddwnds)$/;"	f	class:CDragDropMgr
+AddWindow	DragDrop.cpp	/^void CDragDropMgr::AddWindow(HWND hwnd, int type)$/;"	f	class:CDragDropMgr
+RemoveWindow	DragDrop.cpp	/^void CDragDropMgr::RemoveWindow(HWND hwnd)$/;"	f	class:CDragDropMgr
+GetWindowType	DragDrop.cpp	/^UINT CDragDropMgr::GetWindowType(HWND hwnd)$/;"	f	class:CDragDropMgr
+PreTranslateMessage	DragDrop.cpp	/^BOOL CDragDropMgr::PreTranslateMessage(MSG* pMsg)$/;"	f	class:CDragDropMgr
+GetPoint	DragDrop.cpp	/^POINT CDragDropMgr::GetPoint( LPARAM lp )$/;"	f	class:CDragDropMgr
+OnLButtonDown	DragDrop.cpp	/^BOOL CDragDropMgr::OnLButtonDown(const MSG& msg)$/;"	f	class:CDragDropMgr
+OnMouseMove	DragDrop.cpp	/^int CDragDropMgr::OnMouseMove(const MSG& msg)$/;"	f	class:CDragDropMgr
+OnLButtonUp	DragDrop.cpp	/^BOOL CDragDropMgr::OnLButtonUp(const MSG& msg)$/;"	f	class:CDragDropMgr
+SetState	DragDrop.cpp	/^void CDragDropMgr::SetState(UINT iState)$/;"	f	class:CDragDropMgr
+CreateDragImage	DragDrop.cpp	/^HIMAGELIST CDragDropData::CreateDragImage(HWND pWnd, RECT& rc)$/;"	f	class:CDragDropData
+OnGetDragSize	DragDrop.cpp	/^SIZE CDragDropText::OnGetDragSize(HDC & dc)$/;"	f	class:CDragDropText
+OnDrawData	DragDrop.cpp	/^void CDragDropText::OnDrawData(HDC& dc, RECT& rc)$/;"	f	class:CDragDropText
+HWNDMAP	DragDrop.h	/^typedef hash_map<HWND,UINT> HWNDMAP;$/;"	t
+HWNDMAPENTRY	DragDrop.h	/^typedef pair<HWND,UINT> HWNDMAPENTRY;$/;"	t
+CDragDropData	DragDrop.h	/^class CDragDropData {$/;"	c
+m_bitmap	DragDrop.h	/^	HBITMAP			m_bitmap;				 \/\/ bitmap used for drawing$/;"	m	class:CDragDropData
+CDragDropData	DragDrop.h	/^	CDragDropData() { }$/;"	f	class:CDragDropData
+~CDragDropData	DragDrop.h	/^	~CDragDropData() { }$/;"	f	class:CDragDropData
+CreateDragImage	DragDrop.h	/^	HIMAGELIST CreateDragImage(HWND hWnd, RECT& rc);$/;"	p	class:CDragDropData
+OnGetDragSize	DragDrop.h	/^	virtual SIZE OnGetDragSize(HDC & dc) = 0;$/;"	p	class:CDragDropData
+OnDrawData	DragDrop.h	/^	virtual void  OnDrawData(HDC & dc, RECT & rc) = 0;$/;"	p	class:CDragDropData
+OnGetData	DragDrop.h	/^	virtual void* OnGetData()= 0;$/;"	p	class:CDragDropData
+CDragDropText	DragDrop.h	/^class CDragDropText : public CDragDropData {$/;"	c
+MAXWIDTH	DragDrop.h	/^	enum { MAXWIDTH=MAX_PATH+1 };$/;"	e	enum:CDragDropText::__anon1
+m_text	DragDrop.h	/^	LPWSTR m_text;$/;"	m	class:CDragDropText
+CDragDropText	DragDrop.h	/^	CDragDropText(LPCTSTR text) {$/;"	f	class:CDragDropText
+~CDragDropText	DragDrop.h	/^	~CDragDropText() { delete m_text; }$/;"	f	class:CDragDropText
+OnGetDragSize	DragDrop.h	/^	SIZE OnGetDragSize(HDC & dc);$/;"	p	class:CDragDropText
+OnDrawData	DragDrop.h	/^	void  OnDrawData(HDC& dc, RECT& rc);$/;"	p	class:CDragDropText
+OnGetData	DragDrop.h	/^	void* OnGetData() { return (void*)(LPCTSTR) m_text; }$/;"	f	class:CDragDropText
+WM_DD_DRAGENTER	DragDrop.h	79;"	d
+WM_DD_DRAGDROP	DragDrop.h	80;"	d
+WM_DD_DRAGABORT	DragDrop.h	81;"	d
+WM_DD_DRAGOVER	DragDrop.h	82;"	d
+DDW_SOURCE	DragDrop.h	/^const UINT DDW_SOURCE = 0x01; \/\/ window is drag-drop source$/;"	v
+DDW_TARGET	DragDrop.h	/^const UINT DDW_TARGET = 0x02;	\/\/ window is drag-dtop target$/;"	v
+DRAGDROPWND	DragDrop.h	/^struct DRAGDROPWND {$/;"	s
+id	DragDrop.h	/^	UINT id;					\/\/ window ID$/;"	m	struct:DRAGDROPWND
+type	DragDrop.h	/^	UINT type;				\/\/ DDW_ flags above$/;"	m	struct:DRAGDROPWND
+DRAGDROPINFO	DragDrop.h	/^struct DRAGDROPINFO {$/;"	s
+hwndSource	DragDrop.h	/^	HWND hwndSource;		\/\/ source window$/;"	m	struct:DRAGDROPINFO
+hwndTarget	DragDrop.h	/^	HWND hwndTarget;		\/\/ target window$/;"	m	struct:DRAGDROPINFO
+data	DragDrop.h	/^	CDragDropData* data;	\/\/ data to drag\/drop$/;"	m	struct:DRAGDROPINFO
+pt	DragDrop.h	/^	POINT pt;				\/\/ current point (cursor) in client coords$/;"	m	struct:DRAGDROPINFO
+CDragDropMgr	DragDrop.h	/^class CDragDropMgr {$/;"	c
+NONE	DragDrop.h	/^	enum { NONE=0, CAPTURED, DRAGGING }; \/\/ internal states$/;"	e	enum:CDragDropMgr::__anon2
+CAPTURED	DragDrop.h	/^	enum { NONE=0, CAPTURED, DRAGGING }; \/\/ internal states$/;"	e	enum:CDragDropMgr::__anon2
+DRAGGING	DragDrop.h	/^	enum { NONE=0, CAPTURED, DRAGGING }; \/\/ internal states$/;"	e	enum:CDragDropMgr::__anon2
+m_pMainWnd	DragDrop.h	/^	HWND				m_pMainWnd;				 \/\/ main window$/;"	m	class:CDragDropMgr
+m_mapHwnd	DragDrop.h	/^	HWNDMAP			m_mapHwnd;				 \/\/ map of source\/target windows$/;"	m	class:CDragDropMgr
+m_hCursorDrop	DragDrop.h	/^	HCURSOR			m_hCursorDrop;			 \/\/ ok-to-drop cursor$/;"	m	class:CDragDropMgr
+m_hCursorNo	DragDrop.h	/^	HCURSOR			m_hCursorNo;			 \/\/ no-drop cursor$/;"	m	class:CDragDropMgr
+m_info	DragDrop.h	/^	DRAGDROPINFO	m_info;					 \/\/ data during drag\/drop$/;"	m	class:CDragDropMgr
+m_iState	DragDrop.h	/^	UINT				m_iState;				 \/\/ current state: CAPTURED\/DRAGGING$/;"	m	class:CDragDropMgr
+m_hwndTracking	DragDrop.h	/^	HWND				m_hwndTracking;		 \/\/ window w\/mouse capture$/;"	m	class:CDragDropMgr
+m_ptOrg	DragDrop.h	/^	POINT			m_ptOrg;					 \/\/ original point start of drag$/;"	m	class:CDragDropMgr
+m_pDragImage	DragDrop.h	/^	HIMAGELIST		m_pDragImage;			 \/\/ imagelist for dragging$/;"	m	class:CDragDropMgr
+m_hCursorSave	DragDrop.h	/^	HCURSOR			m_hCursorSave;			 \/\/ save cursor$/;"	m	class:CDragDropMgr
+OnLButtonDown	DragDrop.h	/^	BOOL OnLButtonDown(const MSG& msg);$/;"	p	class:CDragDropMgr
+OnMouseMove	DragDrop.h	/^	int OnMouseMove(const MSG& msg);$/;"	p	class:CDragDropMgr
+OnLButtonUp	DragDrop.h	/^	BOOL OnLButtonUp(const MSG& msg);$/;"	p	class:CDragDropMgr
+SetState	DragDrop.h	/^	void SetState(UINT iState);$/;"	p	class:CDragDropMgr
+IsCaptured	DragDrop.h	/^	BOOL IsCaptured() { return m_iState>=CAPTURED; }$/;"	f	class:CDragDropMgr
+IsDragging	DragDrop.h	/^	BOOL IsDragging() { return m_iState>=DRAGGING; }$/;"	f	class:CDragDropMgr
+IsSourceWnd	DragDrop.h	/^	BOOL IsSourceWnd(HWND hwnd) {$/;"	f	class:CDragDropMgr
+IsTargetWnd	DragDrop.h	/^	BOOL IsTargetWnd(HWND hwnd) {$/;"	f	class:CDragDropMgr
+GetWindowType	DragDrop.h	/^	UINT GetWindowType(HWND hwnd);$/;"	p	class:CDragDropMgr
+GetPoint	DragDrop.h	/^	POINT GetPoint(LPARAM lp);$/;"	p	class:CDragDropMgr
+m_bDrag	DragDrop.h	/^	BOOL m_bDrag;$/;"	m	class:CDragDropMgr
+CDragDropMgr	DragDrop.h	/^	CDragDropMgr();$/;"	p	class:CDragDropMgr
+~CDragDropMgr	DragDrop.h	/^	virtual ~CDragDropMgr();$/;"	p	class:CDragDropMgr
+Install	DragDrop.h	/^	BOOL Install(HWND pMainWnd, DRAGDROPWND* pWnds);$/;"	p	class:CDragDropMgr
+PreTranslateMessage	DragDrop.h	/^	BOOL PreTranslateMessage(MSG* pMsg);$/;"	p	class:CDragDropMgr
+SetCursors	DragDrop.h	/^	void SetCursors(HCURSOR hCursorDrop, HCURSOR hCursorNo)$/;"	f	class:CDragDropMgr
+AddWindow	DragDrop.h	/^	void AddWindow(HWND hwnd, int type);$/;"	p	class:CDragDropMgr
+RemoveWindow	DragDrop.h	/^	void RemoveWindow(HWND hwnd);$/;"	p	class:CDragDropMgr
+SetProcessList	Lists.cpp	/^SetProcessList(HWND hListBox, HWND hListBoxExclusions, BOOL bFilter )$/;"	f
+SetExcludedList	Lists.cpp	/^void SetExcludedList(HWND hListBox )$/;"	f
+OnBnClickedButtonAddMS_Exclusion	Lists.cpp	/^void OnBnClickedButtonAddMS_Exclusion( HWND hMainDialog )$/;"	f
+OnBnClickedButtonRemoveMS_Exclusion	Lists.cpp	/^void OnBnClickedButtonRemoveMS_Exclusion( HWND hMainDialog)$/;"	f
+GetTextLen	Lists.cpp	/^int GetTextLen(LPCTSTR lpszText)$/;"	f
+OnBnClickedCheckDoNotShowExcluded	Lists.cpp	/^void OnBnClickedCheckDoNotShowExcluded()$/;"	f
+OnBnClickedButtonRefresh	Lists.cpp	/^void OnBnClickedButtonRefresh()$/;"	f
+OnLbnDblclkListProcesses	Lists.cpp	/^void OnLbnDblclkListProcesses()$/;"	f
+OnLbnDblclkListExcluded	Lists.cpp	/^void OnLbnDblclkListExcluded()$/;"	f
+MAX_VALUE_NAME	MSEPX.cpp	9;"	d	file:
+MAX_MSSG	MSEPX.cpp	10;"	d	file:
+MAX_LOADSTRING	MSEPX.cpp	12;"	d	file:
+PIPE_TIMEOUT	MSEPX.cpp	13;"	d	file:
+MS_ESS_REG_XP	MSEPX.cpp	16;"	d	file:
+si	MSEPX.cpp	/^STARTUPINFO si;$/;"	v
+sa	MSEPX.cpp	/^SECURITY_ATTRIBUTES sa;$/;"	v
+sd	MSEPX.cpp	/^SECURITY_DESCRIPTOR sd;               \/\/security information for pipes$/;"	v
+pi	MSEPX.cpp	/^PROCESS_INFORMATION pi;$/;"	v
+bServiceRunning	MSEPX.cpp	/^BOOL bServiceRunning = FALSE;$/;"	v
+bExclusionListSelectionState	MSEPX.cpp	/^BOOL bExclusionListSelectionState = TRUE;$/;"	v
+bProcessListSelectionState	MSEPX.cpp	/^BOOL bProcessListSelectionState = TRUE;$/;"	v
+bDoNotShowExcludedProcesses	MSEPX.cpp	/^BOOL bDoNotShowExcludedProcesses = FALSE;$/;"	v
+hInst	MSEPX.cpp	/^HINSTANCE hInst;								\/\/ current instance$/;"	v
+szTitle	MSEPX.cpp	/^TCHAR szTitle[MAX_LOADSTRING];					\/\/ The title bar text$/;"	v
+szWindowClass	MSEPX.cpp	/^TCHAR szWindowClass[MAX_LOADSTRING];			\/\/ the main window class name$/;"	v
+hMainDialog	MSEPX.cpp	/^HWND hMainDialog = NULL;$/;"	v
+hInitDlg	MSEPX.cpp	/^HWND hInitDlg = NULL;$/;"	v
+pDD	MSEPX.cpp	/^CDragDropMgr * pDD;$/;"	v
+InitDlgProc	MSEPX.cpp	/^BOOL CALLBACK InitDlgProc(HWND hwnd, $/;"	p	file:
+CallStartService	MSEPX.cpp	/^bool CallStartService();$/;"	p	file:
+MainDialogProc	MSEPX.cpp	/^BOOL CALLBACK MainDialogProc (HWND hwnd, $/;"	f
+_tWinMain	MSEPX.cpp	/^int APIENTRY _tWinMain(HINSTANCE hInstance,$/;"	f
+MyRegisterClass	MSEPX.cpp	/^ATOM MyRegisterClass(HINSTANCE hInstance)$/;"	f
+InitInstance	MSEPX.cpp	/^BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)$/;"	f
+WndProc	MSEPX.cpp	/^LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)$/;"	f
+About	MSEPX.cpp	/^INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)$/;"	f
+StartRegService	MSEPX.cpp	/^BOOL StartRegService()$/;"	f
+CallStartService	MSEPX.cpp	/^bool CallStartService()$/;"	f
+SetProcessList	MSEPX.cpp	/^void SetProcessList(HWND hListBox, HWND hListBoxExclusions, BOOL bFilter )$/;"	f
+SetExcludedList	MSEPX.cpp	/^void SetExcludedList(HWND hListBox )$/;"	f
+OnBnClickedButtonAddMS_Exclusion	MSEPX.cpp	/^void OnBnClickedButtonAddMS_Exclusion( HWND hMainDialog )$/;"	f
+OnBnClickedButtonRemoveMS_Exclusion	MSEPX.cpp	/^void OnBnClickedButtonRemoveMS_Exclusion( HWND hMainDialog)$/;"	f
+GetTextLen	MSEPX.cpp	/^int GetTextLen(HWND hMainDialog, LPCTSTR lpszText)$/;"	f
+OnBnClickedCheckDoNotShowExcluded	MSEPX.cpp	/^void OnBnClickedCheckDoNotShowExcluded(HWND hMainDialog)$/;"	f
+OnBnClickedButtonRefresh	MSEPX.cpp	/^void OnBnClickedButtonRefresh(HWND hMainDialog)$/;"	f
+OnLbnDblclkListProcesses	MSEPX.cpp	/^void OnLbnDblclkListProcesses(HWND hMainDialog)$/;"	f
+OnLbnDblclkListExcluded	MSEPX.cpp	/^void OnLbnDblclkListExcluded(HWND hMainDialog)$/;"	f
+IsWinNT	MSEPX.cpp	/^bool IsWinNT()  \/\/check if we're running NT$/;"	f
+ErrorMessage	MSEPX.cpp	/^void ErrorMessage(LPTSTR str)  \/\/display detailed error info$/;"	f
+CenterDialogInWindow	MSEPX.cpp	/^void CenterDialogInWindow( HWND hWindow, HWND hDialog, BOOL Show )$/;"	f
+StopRegService	MSEPX.cpp	/^void StopRegService()$/;"	f
+AddExclusionToRegistry	MSEPX.cpp	/^DWORD AddExclusionToRegistry(LPCTSTR filepath)$/;"	f
+RemoveExclusionFromRegistry	MSEPX.cpp	/^DWORD RemoveExclusionFromRegistry(LPCWSTR filepath)$/;"	f
+REQ_PARAM_SEP	MSEPX.cpp	1130;"	d	file:
+AddExToRegUsingService	MSEPX.cpp	/^DWORD AddExToRegUsingService(LPCWSTR filepath)$/;"	f
+RemoveExFromRegUsingService	MSEPX.cpp	/^DWORD RemoveExFromRegUsingService(LPCTSTR filepath)$/;"	f
+InitDlgProc	MSEPX.cpp	/^BOOL CALLBACK InitDlgProc(HWND hwnd, $/;"	f
+OnDragEnter	MSEPX.cpp	/^LRESULT OnDragEnter(WPARAM wp, LPARAM lp)$/;"	f
+OnDragDrop	MSEPX.cpp	/^LRESULT OnDragDrop(WPARAM wp, LPARAM lp)$/;"	f
+OnDragAbort	MSEPX.cpp	/^LRESULT OnDragAbort(WPARAM wp, LPARAM lp)$/;"	f
+GetLBItemUnderPt	MSEPX.cpp	/^int GetLBItemUnderPt(HWND hLB, POINT pt)$/;"	f
+PIPE_NAME	MSEPX.h	12;"	d
+MainDialogProc	MSEPX.h	/^BOOL CALLBACK MainDialogProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);$/;"	p
+RemoveExclusionFromRegistry	MSEPX.h	/^DWORD RemoveExclusionFromRegistry(LPCWSTR filepath);$/;"	p
+AddExclusionToRegistry	MSEPX.h	/^DWORD AddExclusionToRegistry(LPCTSTR filepath);$/;"	p
+AddExToRegUsingService	MSEPX.h	/^DWORD AddExToRegUsingService(LPCTSTR filepath);$/;"	p
+RemoveExFromRegUsingService	MSEPX.h	/^DWORD RemoveExFromRegUsingService(LPCTSTR filepath);$/;"	p
+OnLbnDblclkListExcluded	MSEPX.h	/^void OnLbnDblclkListExcluded(HWND hMainDialog);$/;"	p
+OnLbnDblclkListProcesses	MSEPX.h	/^void OnLbnDblclkListProcesses(HWND hMainDialog);$/;"	p
+OnBnClickedButtonRefresh	MSEPX.h	/^void OnBnClickedButtonRefresh(HWND hMainDialog);$/;"	p
+OnBnClickedCheckDoNotShowExcluded	MSEPX.h	/^void OnBnClickedCheckDoNotShowExcluded(HWND hMainDialog);$/;"	p
+GetTextLen	MSEPX.h	/^int GetTextLen(HWND hMainDialog, LPCTSTR lpszText);$/;"	p
+OnBnClickedButtonRemoveMS_Exclusion	MSEPX.h	/^void OnBnClickedButtonRemoveMS_Exclusion( HWND hMainDialog);$/;"	p
+OnBnClickedButtonAddMS_Exclusion	MSEPX.h	/^void OnBnClickedButtonAddMS_Exclusion( HWND hMainDialog );$/;"	p
+SetExcludedList	MSEPX.h	/^void SetExcludedList(HWND hListBox );$/;"	p
+SetProcessList	MSEPX.h	/^void SetProcessList(HWND hListBox, HWND hListBoxExclusions, BOOL bFilter );$/;"	p
+MyRegisterClass	MSEPX.h	/^ATOM				MyRegisterClass(HINSTANCE hInstance);$/;"	p
+InitInstance	MSEPX.h	/^BOOL				InitInstance(HINSTANCE, int);$/;"	p
+WndProc	MSEPX.h	/^LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);$/;"	p
+About	MSEPX.h	/^INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);$/;"	p
+StartRegService	MSEPX.h	/^BOOL StartRegService();$/;"	p
+IsWinNT	MSEPX.h	/^bool IsWinNT();$/;"	p
+CenterDialogInWindow	MSEPX.h	/^void CenterDialogInWindow( HWND hWindow, HWND hDialog, BOOL Show=TRUE);$/;"	p
+ErrorMessage	MSEPX.h	/^void ErrorMessage(LPTSTR str);$/;"	p
+StopRegService	MSEPX.h	/^void StopRegService();$/;"	p
+OnDragEnter	MSEPX.h	/^LRESULT OnDragEnter(WPARAM wp, LPARAM lp);$/;"	p
+OnDragDrop	MSEPX.h	/^LRESULT OnDragDrop(WPARAM wp, LPARAM lp);$/;"	p
+OnDragAbort	MSEPX.h	/^LRESULT OnDragAbort(WPARAM wp, LPARAM lp);$/;"	p
+GetLBItemUnderPt	MSEPX.h	/^int GetLBItemUnderPt(HWND hLB, POINT pt);$/;"	p
+CEnumProcessList	ProcListP.cpp	/^CEnumProcessList::CEnumProcessList():m_hProcess(0),m_dwError(0)$/;"	f	class:CEnumProcessList
+CEnumProcessList	ProcListP.cpp	/^CEnumProcessList::CEnumProcessList(DWORD dwProcessID):  m_hProcess(0),m_dwError(0)$/;"	f	class:CEnumProcessList
+~CEnumProcessList	ProcListP.cpp	/^CEnumProcessList::~CEnumProcessList()$/;"	f	class:CEnumProcessList
+GetModuleVersion	ProcListP.cpp	/^BOOL CEnumProcessList::GetModuleVersion(CString ModuleName,CString &VersionString)$/;"	f	class:CEnumProcessList
+SearchProcessOrModule	ProcListP.cpp	/^BOOL CEnumProcessList::SearchProcessOrModule(CString ModuleName,CModuleDetails* pModuleData)$/;"	f	class:CEnumProcessList
+GetFirst	ProcListP.cpp	/^CModuleDetails*  CEnumProcessList::GetFirst()$/;"	f	class:CEnumProcessList
+GetNext	ProcListP.cpp	/^CModuleDetails* CEnumProcessList::GetNext()$/;"	f	class:CEnumProcessList
+HasFailed	ProcListP.cpp	/^BOOL CEnumProcessList::HasFailed()$/;"	f	class:CEnumProcessList
+LastError	ProcListP.cpp	/^DWORD CEnumProcessList::LastError()$/;"	f	class:CEnumProcessList
+FormatError	ProcListP.cpp	/^CString CEnumProcessList::FormatError(DWORD dwError)$/;"	f	class:CEnumProcessList
+CModuleDetails	ProcListP.cpp	/^CModuleDetails::CModuleDetails(const HANDLE hProcessID,const HMODULE hModuleID)$/;"	f	class:CModuleDetails
+CModuleDetails	ProcListP.cpp	/^CModuleDetails::CModuleDetails(CModuleDetails&)$/;"	f	class:CModuleDetails
+CModuleDetails	ProcListP.cpp	/^CModuleDetails::CModuleDetails()$/;"	f	class:CModuleDetails
+~CModuleDetails	ProcListP.cpp	/^CModuleDetails::~CModuleDetails()$/;"	f	class:CModuleDetails
+GetVersionString	ProcListP.cpp	/^CString	CModuleDetails::GetVersionString(char *pVersionInfo, char *pKey)$/;"	f	class:CModuleDetails
+HasFailed	ProcListP.cpp	/^BOOL CModuleDetails::HasFailed() const$/;"	f	class:CModuleDetails
+GetComments	ProcListP.cpp	/^CString	CModuleDetails::GetComments() const$/;"	f	class:CModuleDetails
+GetCompanyName	ProcListP.cpp	/^CString	CModuleDetails::GetCompanyName() const$/;"	f	class:CModuleDetails
+GetFileDescription	ProcListP.cpp	/^CString	CModuleDetails::GetFileDescription() const$/;"	f	class:CModuleDetails
+GetFileVersion	ProcListP.cpp	/^CString	CModuleDetails::GetFileVersion() const$/;"	f	class:CModuleDetails
+GetInternalName	ProcListP.cpp	/^CString	CModuleDetails::GetInternalName() const$/;"	f	class:CModuleDetails
+GetLegalCopyright	ProcListP.cpp	/^CString	CModuleDetails::GetLegalCopyright() const$/;"	f	class:CModuleDetails
+GetLegalTrademarks	ProcListP.cpp	/^CString	CModuleDetails::GetLegalTrademarks() const$/;"	f	class:CModuleDetails
+GetOriginalFilename	ProcListP.cpp	/^CString	CModuleDetails::GetOriginalFilename() const$/;"	f	class:CModuleDetails
+GetPrivateBuild	ProcListP.cpp	/^CString	CModuleDetails::GetPrivateBuild() const$/;"	f	class:CModuleDetails
+GetProductName	ProcListP.cpp	/^CString	CModuleDetails::GetProductName() const$/;"	f	class:CModuleDetails
+GetProductVersion	ProcListP.cpp	/^CString	CModuleDetails::GetProductVersion() const$/;"	f	class:CModuleDetails
+GetSpecialBuild	ProcListP.cpp	/^CString	CModuleDetails::GetSpecialBuild() const$/;"	f	class:CModuleDetails
+GetFullFileName	ProcListP.cpp	/^CString	CModuleDetails::GetFullFileName() const$/;"	f	class:CModuleDetails
+GetModuleName	ProcListP.cpp	/^CString	CModuleDetails::GetModuleName() const$/;"	f	class:CModuleDetails
+GetFileSize	ProcListP.cpp	/^ULONGLONG CModuleDetails::GetFileSize() const$/;"	f	class:CModuleDetails
+GetLastError	ProcListP.cpp	/^DWORD CModuleDetails::GetLastError() const$/;"	f	class:CModuleDetails
+IsProcessTrue	ProcListP.cpp	/^BOOL CModuleDetails::IsProcessTrue()$/;"	f	class:CModuleDetails
+TerminateProcess	ProcListP.cpp	/^BOOL CModuleDetails::TerminateProcess()$/;"	f	class:CModuleDetails
+PROCLISTP_H	ProcListP.h	3;"	d
+MAXCOUNT	ProcListP.h	9;"	d
+CModuleDetails	ProcListP.h	/^class CModuleDetails; \/\/ Forward declaration$/;"	x
+CEnumProcessList	ProcListP.h	/^class CEnumProcessList$/;"	c
+CEnumProcessList	ProcListP.h	/^    CEnumProcessList();$/;"	p	class:CEnumProcessList
+CEnumProcessList	ProcListP.h	/^	CEnumProcessList(DWORD dwProcessID);$/;"	p	class:CEnumProcessList
+~CEnumProcessList	ProcListP.h	/^    ~CEnumProcessList();$/;"	p	class:CEnumProcessList
+GetModuleVersion	ProcListP.h	/^	BOOL GetModuleVersion(CString ModuleName,CString &VersionString);$/;"	p	class:CEnumProcessList
+SearchProcessOrModule	ProcListP.h	/^	BOOL SearchProcessOrModule(CString ModuleName,CModuleDetails* pModuleData);$/;"	p	class:CEnumProcessList
+HasFailed	ProcListP.h	/^	BOOL HasFailed();$/;"	p	class:CEnumProcessList
+GetFirst	ProcListP.h	/^	CModuleDetails* GetFirst();$/;"	p	class:CEnumProcessList
+GetNext	ProcListP.h	/^	CModuleDetails* GetNext();$/;"	p	class:CEnumProcessList
+LastError	ProcListP.h	/^	DWORD LastError();$/;"	p	class:CEnumProcessList
+FormatError	ProcListP.h	/^	static CString FormatError(DWORD dwError);$/;"	p	class:CEnumProcessList
+m_ModulesList	ProcListP.h	/^	std::vector<CModuleDetails*> m_ModulesList;$/;"	m	class:CEnumProcessList
+m_ModulesListIterNext	ProcListP.h	/^	std::vector<CModuleDetails*>::iterator m_ModulesListIterNext, m_ModulesListIterUtil;$/;"	m	class:CEnumProcessList
+m_ModulesListIterUtil	ProcListP.h	/^	std::vector<CModuleDetails*>::iterator m_ModulesListIterNext, m_ModulesListIterUtil;$/;"	m	class:CEnumProcessList
+m_bRead	ProcListP.h	/^	BOOL			m_bRead;$/;"	m	class:CEnumProcessList
+m_hProcess	ProcListP.h	/^	HANDLE			m_hProcess;$/;"	m	class:CEnumProcessList
+m_dwError	ProcListP.h	/^	DWORD			m_dwError;$/;"	m	class:CEnumProcessList
+TRANSLATIONS	ProcListP.h	/^struct TRANSLATIONS {$/;"	s
+m_wLangID	ProcListP.h	/^	WORD m_wLangID;$/;"	m	struct:TRANSLATIONS
+m_wCharSet	ProcListP.h	/^	WORD m_wCharSet;$/;"	m	struct:TRANSLATIONS
+CModuleDetails	ProcListP.h	/^class CModuleDetails$/;"	c
+TerminateProcess	ProcListP.h	/^	    BOOL TerminateProcess();$/;"	p	class:CModuleDetails
+IsProcessTrue	ProcListP.h	/^	    BOOL IsProcessTrue();$/;"	p	class:CModuleDetails
+m_bIsProcess	ProcListP.h	/^	BOOL m_bIsProcess;$/;"	m	class:CModuleDetails
+GetAssociatedIcon	ProcListP.h	/^	HICON GetAssociatedIcon();$/;"	p	class:CModuleDetails
+CModuleDetails	ProcListP.h	/^	 CModuleDetails(const HANDLE hProcessID,const HMODULE hModuleID);$/;"	p	class:CModuleDetails
+CModuleDetails	ProcListP.h	/^	 CModuleDetails();$/;"	p	class:CModuleDetails
+~CModuleDetails	ProcListP.h	/^     ~CModuleDetails();$/;"	p	class:CModuleDetails
+HasFailed	ProcListP.h	/^	 BOOL HasFailed() const;$/;"	p	class:CModuleDetails
+GetVersion	ProcListP.h	/^   	 VS_FIXEDFILEINFO GetVersion();$/;"	p	class:CModuleDetails
+GetComments	ProcListP.h	/^     CString	GetComments() const;$/;"	p	class:CModuleDetails
+GetCompanyName	ProcListP.h	/^     CString	GetCompanyName() const;$/;"	p	class:CModuleDetails
+GetFileDescription	ProcListP.h	/^     CString	GetFileDescription() const;$/;"	p	class:CModuleDetails
+GetFileVersion	ProcListP.h	/^     CString	GetFileVersion() const;$/;"	p	class:CModuleDetails
+GetInternalName	ProcListP.h	/^     CString	GetInternalName() const;$/;"	p	class:CModuleDetails
+GetProductName	ProcListP.h	/^	 CString	GetProductName() const;$/;"	p	class:CModuleDetails
+GetProductVersion	ProcListP.h	/^     CString	GetProductVersion() const;$/;"	p	class:CModuleDetails
+GetLegalCopyright	ProcListP.h	/^	 CString	GetLegalCopyright() const;$/;"	p	class:CModuleDetails
+GetLegalTrademarks	ProcListP.h	/^     CString	GetLegalTrademarks() const;$/;"	p	class:CModuleDetails
+GetOriginalFilename	ProcListP.h	/^     CString	GetOriginalFilename() const;$/;"	p	class:CModuleDetails
+GetPrivateBuild	ProcListP.h	/^     CString	GetPrivateBuild() const;$/;"	p	class:CModuleDetails
+GetSpecialBuild	ProcListP.h	/^     CString	GetSpecialBuild() const;$/;"	p	class:CModuleDetails
+GetFullFileName	ProcListP.h	/^     CString	GetFullFileName() const;$/;"	p	class:CModuleDetails
+GetModuleName	ProcListP.h	/^     CString	GetModuleName() const;$/;"	p	class:CModuleDetails
+GetFileSize	ProcListP.h	/^     ULONGLONG		GetFileSize() const;$/;"	p	class:CModuleDetails
+GetLastError	ProcListP.h	/^     DWORD		GetLastError() const;$/;"	p	class:CModuleDetails
+pProcessID	ProcListP.h	/^	 DWORD		pProcessID;$/;"	m	class:CModuleDetails
+CModuleDetails	ProcListP.h	/^	CModuleDetails(CModuleDetails &rCopy);$/;"	p	class:CModuleDetails
+GetVersionString	ProcListP.h	/^	CString	GetVersionString(char *pVersionInfo, char *pKey);$/;"	p	class:CModuleDetails
+m_hProcessHandle	ProcListP.h	/^	HANDLE				m_hProcessHandle;$/;"	m	class:CModuleDetails
+m_hModuleHandle	ProcListP.h	/^	HMODULE				m_hModuleHandle;$/;"	m	class:CModuleDetails
+m_ModuleType	ProcListP.h	/^	CString				m_ModuleType;$/;"	m	class:CModuleDetails
+m_ModuleName	ProcListP.h	/^	CString				m_ModuleName;$/;"	m	class:CModuleDetails
+m_FullFileName	ProcListP.h	/^	CString				m_FullFileName;$/;"	m	class:CModuleDetails
+m_BaseName	ProcListP.h	/^	CString				m_BaseName;$/;"	m	class:CModuleDetails
+m_lFileSize	ProcListP.h	/^	ULONGLONG		m_lFileSize;$/;"	m	class:CModuleDetails
+m_wLangID	ProcListP.h	/^	WORD		m_wLangID;$/;"	m	class:CModuleDetails
+m_wCharSet	ProcListP.h	/^	WORD		m_wCharSet;$/;"	m	class:CModuleDetails
+m_Comments	ProcListP.h	/^	CString		m_Comments;$/;"	m	class:CModuleDetails
+m_CompanyName	ProcListP.h	/^	CString		m_CompanyName;$/;"	m	class:CModuleDetails
+m_FileDescription	ProcListP.h	/^	CString		m_FileDescription;$/;"	m	class:CModuleDetails
+m_FileVersion	ProcListP.h	/^	CString		m_FileVersion;$/;"	m	class:CModuleDetails
+m_InternalName	ProcListP.h	/^	CString		m_InternalName;$/;"	m	class:CModuleDetails
+m_LegalCopyright	ProcListP.h	/^	CString		m_LegalCopyright;$/;"	m	class:CModuleDetails
+m_LegalTrademarks	ProcListP.h	/^	CString		m_LegalTrademarks;$/;"	m	class:CModuleDetails
+m_OriginalFilename	ProcListP.h	/^	CString		m_OriginalFilename;$/;"	m	class:CModuleDetails
+m_PrivateBuild	ProcListP.h	/^	CString		m_PrivateBuild;$/;"	m	class:CModuleDetails
+m_ProductName	ProcListP.h	/^	CString		m_ProductName;$/;"	m	class:CModuleDetails
+m_ProductVersion	ProcListP.h	/^	CString		m_ProductVersion;$/;"	m	class:CModuleDetails
+m_SpecialBuild	ProcListP.h	/^	CString		m_SpecialBuild;$/;"	m	class:CModuleDetails
+m_dwError	ProcListP.h	/^	DWORD		m_dwError;$/;"	m	class:CModuleDetails
+FACILITY_SYSTEM	RegValSvc.h	31;"	d
+FACILITY_STUBS	RegValSvc.h	32;"	d
+FACILITY_RUNTIME	RegValSvc.h	33;"	d
+FACILITY_IO_ERROR_CODE	RegValSvc.h	34;"	d
+STATUS_SEVERITY_WARNING	RegValSvc.h	40;"	d
+STATUS_SEVERITY_SUCCESS	RegValSvc.h	41;"	d
+STATUS_SEVERITY_INFORMATIONAL	RegValSvc.h	42;"	d
+STATUS_SEVERITY_ERROR	RegValSvc.h	43;"	d
+SVC_ERROR	RegValSvc.h	53;"	d
+IDC_MYICON	resource.h	5;"	d
+IDD_MSEPX_DIALOG	resource.h	6;"	d
+IDS_APP_TITLE	resource.h	7;"	d
+IDD_ABOUTBOX	resource.h	8;"	d
+IDM_ABOUT	resource.h	9;"	d
+IDM_EXIT	resource.h	10;"	d
+IDI_MSEPX	resource.h	11;"	d
+IDI_SMALL	resource.h	12;"	d
+IDC_MSEPX	resource.h	13;"	d
+IDR_MAINFRAME	resource.h	14;"	d
+IDD_DLG_MAIN	resource.h	15;"	d
+IDD_INIT	resource.h	16;"	d
+IDC_LIST_PROCESSES	resource.h	17;"	d
+IDC_INIT_MSSG	resource.h	18;"	d
+IDC_LIST_EXCLUDED	resource.h	19;"	d
+IDC_EDIT1	resource.h	20;"	d
+IDC_BUTTON_MSEX	resource.h	21;"	d
+IDC_BUTTON_MSEX_RMV	resource.h	22;"	d
+IDC_SCROLLBAR1	resource.h	23;"	d
+IDC_BUTTON_REFRESH	resource.h	24;"	d
+IDC_CHECK_DONOT_SHOW_EXCLUDED	resource.h	25;"	d
+IDC_STATIC	resource.h	26;"	d
+_APS_NO_MFC	resource.h	32;"	d
+_APS_NEXT_RESOURCE_VALUE	resource.h	33;"	d
+_APS_NEXT_COMMAND_VALUE	resource.h	34;"	d
+_APS_NEXT_CONTROL_VALUE	resource.h	35;"	d
+_APS_NEXT_SYMED_VALUE	resource.h	36;"	d
+SVCNAME	ServiceName.h	5;"	d
+ASSERT	stdafx.h	27;"	d
+MAX_DIR_LEN	stdafx.h	33;"	d
+ProcessCommand	svc.cpp	/^BOOL ProcessCommand( DWORD dwArgc, LPWSTR * lpszArgv );$/;"	p	file:
+PipeThread	svc.cpp	/^DWORD WINAPI PipeThread(LPVOID); $/;"	p	file:
+InstanceThread	svc.cpp	/^DWORD WINAPI InstanceThread(LPVOID); $/;"	p	file:
+ProcessRequest	svc.cpp	/^VOID ProcessRequest(LPWSTR, LPWSTR, DWORD &);$/;"	p	file:
+MAX_SVC_MSSG_SZ	svc.cpp	25;"	d	file:
+mssg	svc.cpp	/^WCHAR mssg[MAX_SVC_MSSG_SZ];$/;"	v
+gSvcStatus	svc.cpp	/^SERVICE_STATUS          gSvcStatus; $/;"	v
+gSvcStatusHandle	svc.cpp	/^SERVICE_STATUS_HANDLE   gSvcStatusHandle; $/;"	v
+ghSvcStopEvent	svc.cpp	/^HANDLE                  ghSvcStopEvent = NULL;$/;"	v
+_tmain	svc.cpp	/^void __cdecl _tmain(int argc, WCHAR *argv[]) $/;"	f
+SvcInstall	svc.cpp	/^VOID SvcInstall()$/;"	f
+SvcMain	svc.cpp	/^VOID WINAPI SvcMain( DWORD dwArgc, LPTSTR *lpszArgv )$/;"	f
+ServiceRun	svc.cpp	/^VOID ServiceRun( DWORD dwArgc, LPTSTR *lpszArgv)$/;"	f
+PipeThread	svc.cpp	/^DWORD WINAPI PipeThread(LPVOID lpvParam)$/;"	f
+InstanceThread	svc.cpp	/^DWORD WINAPI InstanceThread(LPVOID lpvParam)$/;"	f
+REQ_PARAM_SEP	svc.cpp	529;"	d	file:
+ProcessRequest	svc.cpp	/^VOID ProcessRequest( LPWSTR pchRequest, LPWSTR pchReply, DWORD & chReplyBytes )$/;"	f
+REG_CMD	svc.cpp	/^enum REG_CMD {$/;"	g	file:
+NO_CMD	svc.cpp	/^	NO_CMD,$/;"	e	enum:REG_CMD	file:
+ADD_CMD	svc.cpp	/^	ADD_CMD,$/;"	e	enum:REG_CMD	file:
+DEL_CMD	svc.cpp	/^	DEL_CMD$/;"	e	enum:REG_CMD	file:
+ProcessCommand	svc.cpp	/^BOOL ProcessCommand( DWORD dwArgc, LPWSTR * lpszArgv )$/;"	f
+GetRegistrationKey	svc.cpp	/^HKEY GetRegistrationKey(LPTSTR keyname)$/;"	f
+GetRegSubKey	svc.cpp	/^HKEY GetRegSubKey( LPTSTR keyname, LPTSTR subkeyname )$/;"	f
+GetRegValType	svc.cpp	/^DWORD GetRegValType(LPTSTR RegValueType)$/;"	f
+RegDataValue	svc.cpp	/^static DWORD RegDataValue = 0;$/;"	v	file:
+GetRegData	svc.cpp	/^byte* GetRegData(DWORD RegValueType, LPTSTR value, DWORD & size)$/;"	f
+ReportSvcStatus	svc.cpp	/^VOID ReportSvcStatus( DWORD dwCurrentState,$/;"	f
+SvcCtrlHandler	svc.cpp	/^VOID WINAPI SvcCtrlHandler( DWORD dwCtrl )$/;"	f
+SvcReportEvent	svc.cpp	/^VOID SvcReportEvent(LPTSTR szFunction) $/;"	f
+MAX_PATH_LEN	svc.h	15;"	d
+_ThreadArgs	svc.h	/^struct _ThreadArgs {$/;"	s
+QuitEvent	svc.h	/^	HANDLE QuitEvent;$/;"	m	struct:_ThreadArgs
+PipeName	svc.h	/^	LPCWSTR PipeName;$/;"	m	struct:_ThreadArgs
+SvcInstall	svc.h	/^VOID SvcInstall(void);$/;"	p
+SvcCtrlHandler	svc.h	/^VOID WINAPI SvcCtrlHandler( DWORD ); $/;"	p
+SvcMain	svc.h	/^VOID WINAPI SvcMain( DWORD, LPTSTR * ); $/;"	p
+ReportSvcStatus	svc.h	/^VOID ReportSvcStatus( DWORD, DWORD, DWORD );$/;"	p
+ServiceRun	svc.h	/^VOID ServiceRun( DWORD, LPTSTR * ); $/;"	p
+SvcReportEvent	svc.h	/^VOID SvcReportEvent( LPTSTR );$/;"	p
+GetRegistrationKey	svc.h	/^HKEY GetRegistrationKey(LPTSTR keyname);$/;"	p
+GetRegSubKey	svc.h	/^HKEY GetRegSubKey( LPTSTR keyname, LPTSTR subkeyname );$/;"	p
+GetRegValType	svc.h	/^DWORD GetRegValType(LPTSTR RegValueType);$/;"	p
+GetRegData	svc.h	/^byte* GetRegData(DWORD RegValueType, LPTSTR value, DWORD & size);$/;"	p
+DisplayUsage	SvcConfig.h	/^VOID __stdcall DisplayUsage(void);$/;"	p
+DoQuerySvc	SvcConfig.h	/^DWORD __stdcall DoQuerySvc(LPCWSTR szSvcName);$/;"	p
+DoUpdateSvcDesc	SvcConfig.h	/^VOID __stdcall DoUpdateSvcDesc(LPCWSTR szSvcName);$/;"	p
+DoDisableSvc	SvcConfig.h	/^VOID __stdcall DoDisableSvc(LPCWSTR szSvcName);$/;"	p
+DoEnableSvc	SvcConfig.h	/^VOID __stdcall DoEnableSvc(LPCWSTR szSvcName);$/;"	p
+DoDeleteSvc	SvcConfig.h	/^VOID __stdcall DoDeleteSvc(LPCWSTR szSvcName);$/;"	p
+schSCManager	SvcControl.h	/^extern SC_HANDLE schSCManager;$/;"	x
+schService	SvcControl.h	/^extern SC_HANDLE schService;$/;"	x
+DisplayUsage	SvcControl.h	/^VOID __stdcall DisplayUsage(void);$/;"	p
+DoStartSvc	SvcControl.h	/^DWORD __stdcall DoStartSvc(LPCWSTR szSvcName, DWORD argc, LPCWSTR args[]);$/;"	p
+DoUpdateSvcDacl	SvcControl.h	/^VOID __stdcall DoUpdateSvcDacl(LPCWSTR szSvcName);$/;"	p
+DoStopSvc	SvcControl.h	/^VOID __stdcall DoStopSvc(LPCWSTR szSvcName);$/;"	p
+WINVER	targetver.h	11;"	d
+_WIN32_WINNT	targetver.h	15;"	d
+_WIN32_WINDOWS	targetver.h	19;"	d
+_WIN32_IE	targetver.h	23;"	d
+CUtility	Utility.cpp	/^CUtility::CUtility(void)$/;"	f	class:CUtility
+~CUtility	Utility.cpp	/^CUtility::~CUtility(void)$/;"	f	class:CUtility
+LookupRegistryError	Utility.cpp	/^LPCWSTR CUtility::LookupRegistryError(const DWORD errorcode)$/;"	f	class:CUtility
+ShowRegistryError	Utility.cpp	/^void CUtility::ShowRegistryError( HWND hWnd, DWORD ErrVal, LPCWSTR pStrDetails )$/;"	f	class:CUtility
+SZ_SYS_ERR_MSSG	Utility.h	3;"	d
+SZ_SAFETY	Utility.h	4;"	d
+SZ_ERR_CODE	Utility.h	5;"	d
+ERR_CURRENT_USER_NOT_FOUND	Utility.h	7;"	d
+UNKNOWN_ERROR	Utility.h	8;"	d
+ERR_SERVICE	Utility.h	9;"	d
+ERR_SERVICE_RETVAL	Utility.h	10;"	d
+REG_ERR_CAPTION	Utility.h	12;"	d
+GEN_ERR_FORMAT_STR	Utility.h	13;"	d
+ERR_FORMAT_STR	Utility.h	15;"	d
+code	Utility.h	/^	DWORD code;$/;"	m	struct:__anon3
+sError	Utility.h	/^	LPCWSTR sError;$/;"	m	struct:__anon3
+ERROR_TABLE	Utility.h	/^}ERROR_TABLE, *pERROR_TABLE;$/;"	t	typeref:struct:__anon3
+pERROR_TABLE	Utility.h	/^}ERROR_TABLE, *pERROR_TABLE;$/;"	t	typeref:struct:__anon3
+CUtility	Utility.h	/^class CUtility$/;"	c
+CUtility	Utility.h	/^	CUtility(void);$/;"	p	class:CUtility
+~CUtility	Utility.h	/^	~CUtility(void);$/;"	p	class:CUtility
+GetErrorMessageBuffer	Utility.h	/^	static LPWSTR GetErrorMessageBuffer() { LPWSTR m = new WCHAR[SZ_SYS_ERR_MSSG]; return m; };$/;"	f	class:CUtility
+MaxMssgBuffSz	Utility.h	/^	static const DWORD MaxMssgBuffSz = SZ_SYS_ERR_MSSG; \/\/ buffer size reference$/;"	m	class:CUtility
+ShowRegistryError	Utility.h	/^	static void ShowRegistryError( HWND hWnd, DWORD rv, LPCWSTR details );$/;"	p	class:CUtility
+LookupRegistryError	Utility.h	/^	static LPCWSTR LookupRegistryError(const DWORD errorcode);$/;"	p	class:CUtility
+ProcessServiceResult	WritePipe.cpp	/^DWORD ProcessServiceResult( LPWSTR ResultBuffer, DWORD & SvcRetVal, $/;"	p	file:
+SendMessage2RegValSvc	WritePipe.cpp	/^DWORD SendMessage2RegValSvc( LPCWSTR  lpvMessage )$/;"	f
+ASPACE	WritePipe.cpp	152;"	d	file:
+ProcessServiceResult	WritePipe.cpp	/^DWORD ProcessServiceResult( LPWSTR ResultBuffer, DWORD & SvcRetVal, $/;"	f

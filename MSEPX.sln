@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MSEPX", "MSEPX\MSEPX.vcxproj", "{97640197-82F3-47A9-9FA8-63EB2B79CB79}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MSEPXSVC", "MSEPX_SRVC\MSEPX_SRVC.vcxproj", "{0441B480-9C1D-4BCF-8145-D86311907927}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{97640197-82F3-47A9-9FA8-63EB2B79CB79}.Debug|Win32.ActiveCfg = Debug|Win32
+		{97640197-82F3-47A9-9FA8-63EB2B79CB79}.Debug|Win32.Build.0 = Debug|Win32
+		{97640197-82F3-47A9-9FA8-63EB2B79CB79}.Release|Win32.ActiveCfg = Release|Win32
+		{97640197-82F3-47A9-9FA8-63EB2B79CB79}.Release|Win32.Build.0 = Release|Win32
+		{0441B480-9C1D-4BCF-8145-D86311907927}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0441B480-9C1D-4BCF-8145-D86311907927}.Debug|Win32.Build.0 = Debug|Win32
+		{0441B480-9C1D-4BCF-8145-D86311907927}.Release|Win32.ActiveCfg = Release|Win32
+		{0441B480-9C1D-4BCF-8145-D86311907927}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
